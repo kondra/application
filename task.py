@@ -11,7 +11,7 @@ def decode(c):
 def encode(i):
     return str(unichr(ord('a')+i))
 
-def compute_stats(filename):
+def compute_stats(filename, text_size=-1):
     f = open(filename, 'r')
 
     u = np.zeros(26)
@@ -21,9 +21,9 @@ def compute_stats(filename):
     cnt = 0
 
     for line in f.readlines():
-#        cnt += 1
-#        if cnt > 200000:
-#            break
+        cnt += 1
+        if text_size > 0 and cnt > text_size:
+            break
         line = line.strip()
         u[decode(line[0])] += 1
         for i in xrange(1, len(line)):
@@ -128,9 +128,9 @@ def collect_dictionary(text_filename, K):
     f.close()
     return dict(sorted_d[0:K])
 
-def main(text_filename, encrypted_text_filename, true_text_filename, max_iter=5000, text_size=200, n_starts=10, greedy=False, display=False):
+def main(text_filename, encrypted_text_filename, true_text_filename, max_iter=5000, text_size=-1, enc_text_size=200, n_starts=10, greedy=False, display=False):
 # base task; metropolis with bigrams
-    u,b,n = compute_stats(text_filename)
+    u,b,n = compute_stats(text_filename, text_size)
     u += 0.5
     b += 0.5
     n += n*0.5
@@ -138,8 +138,8 @@ def main(text_filename, encrypted_text_filename, true_text_filename, max_iter=50
     true_text = read_file(true_text_filename)
     encrypted_text = read_file(encrypted_text_filename)
 
-    true_text = true_text[:text_size]
-    encrypted_text = encrypted_text[:text_size]
+    true_text = true_text[:enc_text_size]
+    encrypted_text = encrypted_text[:enc_text_size]
 
     f_best = None
     ll_best = -np.Inf
@@ -179,19 +179,19 @@ def main(text_filename, encrypted_text_filename, true_text_filename, max_iter=50
         print 'TRUE LL: {}'.format(compute_loglikelihood(encrypted_text, u, b, n, lambda c: f_true[c]))
         print 'TRUE: correctly discovered symbols ratio: {}'.format(compute_ratio(encrypted_text, true_text, lambda c: f_true[c]))
 
-def main2(text_filename, encrypted_text_filename, true_text_filename, max_iter=5000, text_size=200, n_starts=10, K=100, greedy=False, display=False):
+def main2(text_filename, encrypted_text_filename, true_text_filename, max_iter=5000, text_size=-1, enc_text_size=200, n_starts=10, K=100, greedy=False, display=False):
 # individual task E
-    u,b,n = compute_stats(text_filename)
+    u,b,n = compute_stats(text_filename, text_size)
     u += 0.5
     b += 0.5
     n += n*0.5
 
-    d = collect_dictionary(text_filename, K)
+    d = collect_dictionary(text_filename, K, text_size)
     true_text = read_file(true_text_filename)
     encrypted_text = read_file(encrypted_text_filename)
 
-    true_text = true_text[:text_size]
-    encrypted_text = encrypted_text[:text_size]
+    true_text = true_text[:enc_text_size]
+    encrypted_text = encrypted_text[:enc_text_size]
 
     f_best = None
     ll_best = -np.Inf
@@ -225,7 +225,7 @@ def compute_loglikelihood_for_EM(f, u_all, b_all, n_all, encrypted_texts, z):
             ll += z[i,k] * compute_loglikelihood(encrypted_texts[i], u_all[k], b_all[k], n_all[k], f)
     return ll
 
-def main3(text_filenames, encrypted_text_filenames, true_text_filenames, max_iter=5000, text_size=200, n_starts=10, display=False, em_max_iter=100):
+def main3(text_filenames, encrypted_text_filenames, true_text_filenames, max_iter=5000, enc_text_size=200, text_size=-1, n_starts=10, display=False, em_max_iter=100):
 # bonus task B
     u_all = []
     b_all = []
@@ -242,8 +242,8 @@ def main3(text_filenames, encrypted_text_filenames, true_text_filenames, max_ite
     true_texts = []
     encrypted_texts = []
     for fn1, fn2 in zip(true_text_filenames, encrypted_text_filenames):
-        true_texts.append(read_file(fn1)[:text_size])
-        encrypted_texts.append(read_file(fn2)[:text_size])
+        true_texts.append(read_file(fn1)[:enc_text_size])
+        encrypted_texts.append(read_file(fn2)[:enc_text_size])
 
     f_best = None
     ll_best = -np.Inf
@@ -253,7 +253,7 @@ def main3(text_filenames, encrypted_text_filenames, true_text_filenames, max_ite
     L = len(encrypted_texts)
     z = np.zeros((L, 4))
 
-    if 1:
+    if __DEBUG__:
         r_true = ['m', 'n', 'k', 'y', 'x', 'f', 'g', 'j', 'r', 'q', 'p', 'v', 'l', 't', 'i', 'w', 's', 'e', 'o', 'a', 'h', 'b', 'c', 'z', 'u', 'd']
         f_true = np.zeros(26, dtype=np.int32)
         for i in xrange(26):
@@ -262,14 +262,9 @@ def main3(text_filenames, encrypted_text_filenames, true_text_filenames, max_ite
             for k in xrange(4):
                 z[l,k] = compute_loglikelihood(encrypted_texts[l], u_all[k], b_all[k], n_all[k], lambda c: f_true[c])
 
-        print compute_ratio(encrypted_texts[0], true_texts[0], lambda c: f_true[c])
-        print compute_ratio(encrypted_texts[1], true_texts[1], lambda c: f_true[c])
-        print compute_ratio(encrypted_texts[2], true_texts[2], lambda c: f_true[c])
-        print compute_ratio(encrypted_texts[3], true_texts[3], lambda c: f_true[c])
-
-        print z
         z = np.exp(z - np.max(z, axis=1, keepdims=True))
         z /= np.sum(z, axis=1, keepdims=True)
+
         print z
 
     # EM algorithm
@@ -280,6 +275,7 @@ def main3(text_filenames, encrypted_text_filenames, true_text_filenames, max_ite
                 z[l,k] = compute_loglikelihood(encrypted_texts[l], u_all[k], b_all[k], n_all[k], lambda c: f[c])
         z = np.exp(z - np.max(z, axis=1, keepdims=True))
         z /= np.sum(z, axis=1, keepdims=True)
+        print 'E-step. Latent variables distribution:'
         print z
         # M-step:
         print 'M step'
@@ -315,9 +311,9 @@ if __name__ == '__main__':
             'app_main/war_and_peace.txt',
             'app_main/oliver_twist.txt.enc',
             'app_main/oliver_twist.txt',
-            10000,
-            10000,
-            10,
+            max_iter=10000,
+            enc_text_size=1000,
+            n_starts=10,
             greedy=False,
             display=False)
 
@@ -326,9 +322,9 @@ if __name__ == '__main__':
             'app_main/war_and_peace.txt',
             'app_main/oliver_twist.txt.enc',
             'app_main/oliver_twist.txt',
-            10000,
-            1000,
-            10,
+            max_iter=10000,
+            enc_text_size=1000,
+            n_starts=10,
             greedy=False,
             display=False)
 
@@ -338,7 +334,8 @@ if __name__ == '__main__':
             ['app_main/oliver_twist.txt.enc1','bonus_b/de/enc.txt','bonus_b/fr/enc.txt','bonus_b/pg/enc.txt'],
             ['app_main/oliver_twist.txt','bonus_b/de/02.txt','bonus_b/fr/oliver_twist.txt','bonus_b/pg/pg20103.txt.done'],
             max_iter=2000,
-            text_size=10000,
-            n_starts=5,
+            text_size=200000,
+            enc_text_size=2000,
+            n_starts=1,
             display=False,
             em_max_iter=50)

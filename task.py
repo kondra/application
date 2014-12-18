@@ -53,8 +53,8 @@ def compute_penalized_unigram_loglikelihood(text, u, n, f, d):
     ll = 0
     for w in text.split('\n'):
         w_decoded = [encode(f(decode(c))) for c in w]
-        if w_decoded == w and w_decoded in d:
-            ll += 0.01 * np.log(d[w])
+#        if w_decoded == w and w_decoded in d:
+#            ll += 0.01 * np.log(d[w])
         for i in xrange(0, len(w)):
             ll += np.log(u[f(decode(w[i]))]) - np.log(n)
     return ll
@@ -109,6 +109,18 @@ def read_file(filename):
     f.close()
     return text
 
+def collect_dictionary(text_filename, K):
+    d = {}
+    f = open(text_filename, 'r')
+    for word in f.readlines():
+        word = word.strip()
+        if word not in d:
+            d[word] = 0
+        d[word] += 1
+    sorted_d = sorted(d.items(), key=lambda x: -x[1])
+    f.close()
+    return dict(sorted_d[0:K])
+
 def main(text_filename, encrypted_text_filename, true_text_filename, max_iter=5000, text_size=200, n_starts=10, greedy=False, display=False):
 # base task; metropolis with bigrams
     u,b,n = compute_stats(text_filename)
@@ -160,18 +172,6 @@ def main(text_filename, encrypted_text_filename, true_text_filename, max_iter=50
         print 'TRUE LL: {}'.format(compute_loglikelihood(encrypted_text, u, b, n, lambda c: f_true[c]))
         print 'TRUE: correctly discovered symbols ratio: {}'.format(compute_ratio(encrypted_text, true_text, lambda c: f_true[c]))
 
-def collect_dictionary(text_filename, K):
-    d = {}
-    f = open(text_filename, 'r')
-    for word in f.readlines():
-        word = word.strip()
-        if word not in d:
-            d[word] = 0
-        d[word] += 1
-    sorted_d = sorted(d.items(), key=lambda x: -x[1])
-    f.close()
-    return dict(sorted_d[0:K])
-
 def main2(text_filename, encrypted_text_filename, true_text_filename, max_iter=5000, text_size=200, n_starts=10, K=100, greedy=False, display=False):
 # individual task E
     u,b,n = compute_stats(text_filename)
@@ -207,16 +207,97 @@ def main2(text_filename, encrypted_text_filename, true_text_filename, max_iter=5
 
     avg_ratio = cum_ratio / n_starts
 
-    print 'Best LL: {}, best ratio: {}'.format(ll_best, best_ratio)
+    print 'Best LL: {}, best ratio: {}'.format(ll_best, ratio_best)
     print 'average ratio of correctly discovered symbols: {}'.format(avg_ratio)
 
+def compute_loglikelihood_for_EM(f, u_all, b_all, n_all, encrypted_texts, z):
+    L,K = z.shape
+    ll = 0
+    for i in xrange(L):
+        for k in xrange(K):
+            ll += z[i,k] * compute_loglikelihood(encrypted_texts[i], u_all[k], b_all[k], n_all[k], f)
+    return ll
+
+def main3(text_filenames, encrypted_text_filenames, true_text_filenames, max_iter=5000, text_size=200, n_starts=10, display=False, em_max_iter=100):
+# bonus task B
+    u_all = []
+    b_all = []
+    n_all = []
+    for filename in text_filenames:
+        u,b,n = compute_stats(filename)
+        u += 0.5
+        b += 0.5
+        n += n*0.5
+        u_all.append(u)
+        b_all.append(b)
+        n_all.append(n)
+
+    true_texts = []
+    encrypted_texts = []
+    for fn1, fn2 in zip(true_text_filenames, encrypted_text_filenames):
+        true_texts.append(read_file(fn1)[:text_size])
+        encrypted_texts.append(read_file(fn2)[:text_size])
+
+    f_best = None
+    ll_best = -np.Inf
+    best_ratio =-np.Inf 
+    f = np.arange(0, 26, dtype=np.int32)
+    f = np.random.permutation(f)
+    L = len(encrypted_texts)
+    z = np.ones((L, 4)) * 0.25
+    # EM algorithm
+    for n_iter in xrange(em_max_iter):
+        # E-step:
+        for l in xrange(L):
+            for k in xrange(4):
+                z[l,k] = compute_loglikelihood(encrypted_texts[l], u_all[k], b_all[k], n_all[k], lambda c: f[c])
+        z = np.exp(z - np.max(z, axis=1, keepdims=True))
+        z /= np.sum(z, axis=1, keepdims=True)
+        print z
+        # M-step:
+        print 'M step'
+        ll_best_ = -np.Inf
+        f_best_ = None
+        for i in xrange(n_starts):
+            f, ll = metropolis(lambda f: compute_loglikelihood_for_EM(f, u_all, b_all, n_all, encrypted_texts, z), max_iter=max_iter, display=display)
+            print 'start {}: LL = {}'.format(i, ll)
+            if ll > ll_best_:
+                ll_best_ = ll
+                f_best_ = f
+        ll = ll_best_
+        f = f_best_
+        ratio = 0
+        # all texts are of the same length
+        for l in xrange(L):
+            ratio += compute_ratio(encrypted_texts[k], true_texts[k], lambda c: f[c])
+        ratio /= 4
+
+        print 'log-likelihood: {}'.format(ll)
+        print 'ratio of correctly discovered symbols: {}'.format(ratio)
+
+        if ll > ll_best:
+            ll_best = ll
+            f_best = f
+            best_ratio = ratio
+
+    print 'Best LL: {}, best ratio: {}'.format(ll_best, best_ratio)
+
 if __name__ == '__main__':
-    main2(
-        'app_main/war_and_peace.txt',
-        'app_main/oliver_twist.txt.enc',
-        'app_main/oliver_twist.txt',
-        10000,
-        500,
-        10,
-        greedy=False,
-        display=False)
+#    main2(
+#        'app_main/war_and_peace.txt',
+#        'app_main/oliver_twist.txt.enc',
+#        'app_main/oliver_twist.txt',
+#        10000,
+#        1000,
+#        10,
+#        greedy=False,
+#        display=False)
+    main3(
+        ['app_main/war_and_peace.txt','bonus_b/de/war_and_piece.txt','bonus_b/fr/war_and_peace.txt','bonus_b/pg/text.txt'],
+        ['app_main/oliver_twist.txt.enc','bonus_b/de/enc.txt','bonus_b/fr/enc.txt','bonus_b/pg/enc.txt'],
+        ['app_main/oliver_twist.txt','bonus_b/de/02.txt','bonus_b/fr/oliver_twist.txt','bonus_b/pg/pg20103.txt.done'],
+        max_iter=2000,
+        text_size=100,
+        n_starts=5,
+        display=False,
+        em_max_iter=50)

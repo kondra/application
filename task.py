@@ -311,9 +311,10 @@ if __name__ == '__main__':
             'app_main/war_and_peace.txt',
             'app_main/oliver_twist.txt.enc',
             'app_main/oliver_twist.txt',
-            max_iter=10000,
-            enc_text_size=1000,
-            n_starts=10,
+            max_iter=5000,
+            text_size=200000,
+            enc_text_size=8000,
+            n_starts=5,
             greedy=False,
             display=False)
 
@@ -336,6 +337,6 @@ if __name__ == '__main__':
             max_iter=2000,
             text_size=200000,
             enc_text_size=2000,
-            n_starts=1,
+            n_starts=5,
             display=False,
             em_max_iter=50)

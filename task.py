@@ -128,6 +128,14 @@ def collect_dictionary(text_filename, K):
     f.close()
     return dict(sorted_d[0:K])
 
+def compute_loglikelihood_for_EM(f, u_all, b_all, n_all, encrypted_texts, z):
+    L,K = z.shape
+    ll = 0
+    for i in xrange(L):
+        for k in xrange(K):
+            ll += z[i,k] * compute_loglikelihood(encrypted_texts[i], u_all[k], b_all[k], n_all[k], f)
+    return ll
+
 def main(text_filename, encrypted_text_filename, true_text_filename, max_iter=5000, text_size=-1, enc_text_size=200, n_starts=10, greedy=False, display=False):
 # base task; metropolis with bigrams
     u,b,n = compute_stats(text_filename, text_size)
@@ -217,14 +225,6 @@ def main2(text_filename, encrypted_text_filename, true_text_filename, max_iter=5
     print 'Best LL: {}, best ratio: {}'.format(ll_best, ratio_best)
     print 'average ratio of correctly discovered symbols: {}'.format(avg_ratio)
 
-def compute_loglikelihood_for_EM(f, u_all, b_all, n_all, encrypted_texts, z):
-    L,K = z.shape
-    ll = 0
-    for i in xrange(L):
-        for k in xrange(K):
-            ll += z[i,k] * compute_loglikelihood(encrypted_texts[i], u_all[k], b_all[k], n_all[k], f)
-    return ll
-
 def main3(text_filenames, encrypted_text_filenames, true_text_filenames, max_iter=5000, enc_text_size=200, text_size=-1, n_starts=10, display=False, em_max_iter=100):
 # bonus task B
     u_all = []
@@ -307,6 +307,7 @@ def main3(text_filenames, encrypted_text_filenames, true_text_filenames, max_ite
 
 if __name__ == '__main__':
     if sys.argv[1] == '1':
+        # main task
         main(
             'app_main/war_and_peace.txt',
             'app_main/oliver_twist.txt.enc',
@@ -319,6 +320,7 @@ if __name__ == '__main__':
             display=False)
 
     if sys.argv[1] == '2':
+        # individual task E
         main2(
             'app_main/war_and_peace.txt',
             'app_main/oliver_twist.txt.enc',
@@ -326,10 +328,10 @@ if __name__ == '__main__':
             max_iter=10000,
             enc_text_size=1000,
             n_starts=10,
-            greedy=False,
             display=False)
 
     if sys.argv[1] == '3':
+        # bonus task B
         main3(
             ['app_main/war_and_peace.txt','bonus_b/de/war_and_piece.txt','bonus_b/fr/war_and_peace.txt','bonus_b/pg/text.txt'],
             ['app_main/oliver_twist.txt.enc1','bonus_b/de/enc.txt','bonus_b/fr/enc.txt','bonus_b/pg/enc.txt'],

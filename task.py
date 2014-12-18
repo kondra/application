@@ -293,7 +293,7 @@ def main3(text_filenames, encrypted_text_filenames, true_text_filenames, max_ite
         # all texts are of the same length
         for l in xrange(L):
             ratio += compute_ratio(encrypted_texts[k], true_texts[k], lambda c: f[c])
-        ratio /= 4
+        ratio /= L
 
         print 'log-likelihood: {}'.format(ll)
         print 'ratio of correctly discovered symbols: {}'.format(ratio)
@@ -309,15 +309,15 @@ if __name__ == '__main__':
     if sys.argv[1] == '1':
         # main task
         main(
-            'app_main/war_and_peace.txt',
-            'app_main/oliver_twist.txt.enc',
-            'app_main/oliver_twist.txt',
-            max_iter=5000,
-            text_size=200000,
-            enc_text_size=8000,
-            n_starts=5,
-            greedy=False,
-            display=False)
+            'app_main/war_and_peace.txt',# train text
+            'app_main/oliver_twist.txt.enc',# encrypted text
+            'app_main/oliver_twist.txt',# unencrypted text
+            max_iter=5000,# for metropolis
+            text_size=200000,# train text size, -1 for entire text
+            enc_text_size=8000,# encrypted text size
+            n_starts=5,# number of starts of metropolis from random init points
+            greedy=False,# go only to the point with higher probability in metropolis
+            display=False)# be extra verbose
 
     if sys.argv[1] == '2':
         # individual task E
@@ -326,6 +326,7 @@ if __name__ == '__main__':
             'app_main/oliver_twist.txt.enc',
             'app_main/oliver_twist.txt',
             max_iter=10000,
+            text_size=-1,
             enc_text_size=1000,
             n_starts=10,
             display=False)
@@ -334,11 +335,12 @@ if __name__ == '__main__':
         # bonus task B
         main3(
             ['app_main/war_and_peace.txt','bonus_b/de/war_and_piece.txt','bonus_b/fr/war_and_peace.txt','bonus_b/pg/text.txt'],
-            ['app_main/oliver_twist.txt.enc1','bonus_b/de/enc.txt','bonus_b/fr/enc.txt','bonus_b/pg/enc.txt'],
-            ['app_main/oliver_twist.txt','bonus_b/de/02.txt','bonus_b/fr/oliver_twist.txt','bonus_b/pg/pg20103.txt.done'],
+# you MUST preserve order in next two lists
+            ['app_main/oliver_twist.txt.enc1','bonus_b/de/enc.txt','bonus_b/fr/enc.txt','bonus_b/pg/enc.txt','bonus_b/pg/enc2.txt','bonus_b/de/enc2.txt'],
+            ['app_main/oliver_twist.txt','bonus_b/de/02.txt','bonus_b/fr/oliver_twist.txt','bonus_b/pg/pg20103.txt.done','bonus_b/pg/pg32645.txt.done','bonus_b/de/03.txt'],
             max_iter=2000,
             text_size=200000,
             enc_text_size=2000,
-            n_starts=5,
+            n_starts=1,
             display=False,
             em_max_iter=50)

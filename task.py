@@ -1,6 +1,8 @@
 import numpy as np
 import pylab as pl
 
+import sys
+
 __DEBUG__ = False
 
 def decode(c):
@@ -16,7 +18,12 @@ def compute_stats(filename):
     b = np.zeros((26,26))
     n = 0
 
+    cnt = 0
+
     for line in f.readlines():
+#        cnt += 1
+#        if cnt > 200000:
+#            break
         line = line.strip()
         u[decode(line[0])] += 1
         for i in xrange(1, len(line)):
@@ -244,7 +251,27 @@ def main3(text_filenames, encrypted_text_filenames, true_text_filenames, max_ite
     f = np.arange(0, 26, dtype=np.int32)
     f = np.random.permutation(f)
     L = len(encrypted_texts)
-    z = np.ones((L, 4)) * 0.25
+    z = np.zeros((L, 4))
+
+    if 1:
+        r_true = ['m', 'n', 'k', 'y', 'x', 'f', 'g', 'j', 'r', 'q', 'p', 'v', 'l', 't', 'i', 'w', 's', 'e', 'o', 'a', 'h', 'b', 'c', 'z', 'u', 'd']
+        f_true = np.zeros(26, dtype=np.int32)
+        for i in xrange(26):
+            f_true[decode(r_true[i])] = i
+        for l in xrange(L):
+            for k in xrange(4):
+                z[l,k] = compute_loglikelihood(encrypted_texts[l], u_all[k], b_all[k], n_all[k], lambda c: f_true[c])
+
+        print compute_ratio(encrypted_texts[0], true_texts[0], lambda c: f_true[c])
+        print compute_ratio(encrypted_texts[1], true_texts[1], lambda c: f_true[c])
+        print compute_ratio(encrypted_texts[2], true_texts[2], lambda c: f_true[c])
+        print compute_ratio(encrypted_texts[3], true_texts[3], lambda c: f_true[c])
+
+        print z
+        z = np.exp(z - np.max(z, axis=1, keepdims=True))
+        z /= np.sum(z, axis=1, keepdims=True)
+        print z
+
     # EM algorithm
     for n_iter in xrange(em_max_iter):
         # E-step:
@@ -263,9 +290,9 @@ def main3(text_filenames, encrypted_text_filenames, true_text_filenames, max_ite
             print 'start {}: LL = {}'.format(i, ll)
             if ll > ll_best_:
                 ll_best_ = ll
-                f_best_ = f
+                f_best_ = f.copy()
         ll = ll_best_
-        f = f_best_
+        f = f_best_.copy()
         ratio = 0
         # all texts are of the same length
         for l in xrange(L):
@@ -283,21 +310,35 @@ def main3(text_filenames, encrypted_text_filenames, true_text_filenames, max_ite
     print 'Best LL: {}, best ratio: {}'.format(ll_best, best_ratio)
 
 if __name__ == '__main__':
-#    main2(
-#        'app_main/war_and_peace.txt',
-#        'app_main/oliver_twist.txt.enc',
-#        'app_main/oliver_twist.txt',
-#        10000,
-#        1000,
-#        10,
-#        greedy=False,
-#        display=False)
-    main3(
-        ['app_main/war_and_peace.txt','bonus_b/de/war_and_piece.txt','bonus_b/fr/war_and_peace.txt','bonus_b/pg/text.txt'],
-        ['app_main/oliver_twist.txt.enc','bonus_b/de/enc.txt','bonus_b/fr/enc.txt','bonus_b/pg/enc.txt'],
-        ['app_main/oliver_twist.txt','bonus_b/de/02.txt','bonus_b/fr/oliver_twist.txt','bonus_b/pg/pg20103.txt.done'],
-        max_iter=2000,
-        text_size=100,
-        n_starts=5,
-        display=False,
-        em_max_iter=50)
+    if sys.argv[1] == '1':
+        main(
+            'app_main/war_and_peace.txt',
+            'app_main/oliver_twist.txt.enc',
+            'app_main/oliver_twist.txt',
+            10000,
+            10000,
+            10,
+            greedy=False,
+            display=False)
+
+    if sys.argv[1] == '2':
+        main2(
+            'app_main/war_and_peace.txt',
+            'app_main/oliver_twist.txt.enc',
+            'app_main/oliver_twist.txt',
+            10000,
+            1000,
+            10,
+            greedy=False,
+            display=False)
+
+    if sys.argv[1] == '3':
+        main3(
+            ['app_main/war_and_peace.txt','bonus_b/de/war_and_piece.txt','bonus_b/fr/war_and_peace.txt','bonus_b/pg/text.txt'],
+            ['app_main/oliver_twist.txt.enc1','bonus_b/de/enc.txt','bonus_b/fr/enc.txt','bonus_b/pg/enc.txt'],
+            ['app_main/oliver_twist.txt','bonus_b/de/02.txt','bonus_b/fr/oliver_twist.txt','bonus_b/pg/pg20103.txt.done'],
+            max_iter=2000,
+            text_size=10000,
+            n_starts=5,
+            display=False,
+            em_max_iter=50)

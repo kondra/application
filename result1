@@ -1,0 +1,163 @@
+
+log-likelihood: -22.5444001671
+correctly discovered symbols ratio: 0.222222222222
+log-likelihood: -22.970769363
+correctly discovered symbols ratio: 0.0
+log-likelihood: -22.5444001671
+correctly discovered symbols ratio: 0.333333333333
+log-likelihood: -22.4375481377
+correctly discovered symbols ratio: 0.222222222222
+log-likelihood: -22.8643801873
+correctly discovered symbols ratio: 0.444444444444
+log-likelihood: -22.7509283936
+correctly discovered symbols ratio: 0.222222222222
+log-likelihood: -23.0704455601
+correctly discovered symbols ratio: 0.0
+log-likelihood: -22.6860527693
+correctly discovered symbols ratio: 0.222222222222
+log-likelihood: -22.9598508256
+correctly discovered symbols ratio: 0.222222222222
+log-likelihood: -22.991354394
+correctly discovered symbols ratio: 0.222222222222
+Best LL: -22.4375481377, best ratio: 0.222222222222
+average ratio of correctly discovered symbols: 0.211111111111
+[1.01, 1.1, 1.5, 2, 5, 10]
+[0.2222222222222222]
+[0.21111111111111117]
+[0.0]
+[0.44444444444444442]
+log-likelihood: -22.9539078883
+correctly discovered symbols ratio: 0.222222222222
+log-likelihood: -22.9046446937
+correctly discovered symbols ratio: 0.222222222222
+log-likelihood: -22.7685265434
+correctly discovered symbols ratio: 0.111111111111
+log-likelihood: -22.7848261675
+correctly discovered symbols ratio: 0.222222222222
+log-likelihood: -22.7848261675
+correctly discovered symbols ratio: 0.222222222222
+log-likelihood: -23.3163354942
+correctly discovered symbols ratio: 0.0
+log-likelihood: -23.4478396003
+correctly discovered symbols ratio: 0.0
+log-likelihood: -22.8643801873
+correctly discovered symbols ratio: 0.222222222222
+log-likelihood: -22.7685265434
+correctly discovered symbols ratio: 0.0
+log-likelihood: -22.6860527693
+correctly discovered symbols ratio: 0.222222222222
+Best LL: -22.6860527693, best ratio: 0.222222222222
+average ratio of correctly discovered symbols: 0.144444444444
+[1.01, 1.1, 1.5, 2, 5, 10]
+[0.2222222222222222, 0.2222222222222222]
+[0.21111111111111117, 0.14444444444444446]
+[0.0, 0.0]
+[0.44444444444444442, 0.22222222222222221]
+log-likelihood: -22.6398708055
+correctly discovered symbols ratio: 0.222222222222
+log-likelihood: -22.5444001671
+correctly discovered symbols ratio: 0.222222222222
+log-likelihood: -22.7575281579
+correctly discovered symbols ratio: 0.222222222222
+log-likelihood: -23.1220914576
+correctly discovered symbols ratio: 0.0
+log-likelihood: -22.8463191839
+correctly discovered symbols ratio: 0.333333333333
+log-likelihood: -22.9708492111
+correctly discovered symbols ratio: 0.111111111111
+log-likelihood: -22.8802968058
+correctly discovered symbols ratio: 0.222222222222
+log-likelihood: -22.8643801873
+correctly discovered symbols ratio: 0.333333333333
+log-likelihood: -22.9319427034
+correctly discovered symbols ratio: 0.222222222222
+log-likelihood: -23.5104010363
+correctly discovered symbols ratio: 0.222222222222
+Best LL: -22.5444001671, best ratio: 0.222222222222
+average ratio of correctly discovered symbols: 0.211111111111
+[1.01, 1.1, 1.5, 2, 5, 10]
+[0.2222222222222222, 0.2222222222222222, 0.2222222222222222]
+[0.21111111111111117, 0.14444444444444446, 0.2111111111111111]
+[0.0, 0.0, 0.0]
+[0.44444444444444442, 0.22222222222222221, 0.33333333333333331]
+log-likelihood: -23.3352498158
+correctly discovered symbols ratio: 0.222222222222
+log-likelihood: -23.2908292313
+correctly discovered symbols ratio: 0.0
+log-likelihood: -22.7575281579
+correctly discovered symbols ratio: 0.333333333333
+log-likelihood: -22.5444001671
+correctly discovered symbols ratio: 0.333333333333
+log-likelihood: -22.5846646736
+correctly discovered symbols ratio: 0.222222222222
+log-likelihood: -23.1384709298
+correctly discovered symbols ratio: 0.333333333333
+log-likelihood: -23.0110338695
+correctly discovered symbols ratio: 0.0
+log-likelihood: -22.9539078883
+correctly discovered symbols ratio: 0.222222222222
+log-likelihood: -22.5171021575
+correctly discovered symbols ratio: 0.333333333333
+log-likelihood: -23.1838973538
+correctly discovered symbols ratio: 0.0
+Best LL: -22.5171021575, best ratio: 0.333333333333
+average ratio of correctly discovered symbols: 0.2
+[1.01, 1.1, 1.5, 2, 5, 10]
+[0.2222222222222222, 0.2222222222222222, 0.2222222222222222, 0.3333333333333333]
+[0.21111111111111117, 0.14444444444444446, 0.2111111111111111, 0.19999999999999998]
+[0.0, 0.0, 0.0, 0.0]
+[0.44444444444444442, 0.22222222222222221, 0.33333333333333331, 0.33333333333333331]
+log-likelihood: -22.4375481377
+correctly discovered symbols ratio: 0.333333333333
+log-likelihood: -22.7685265434
+correctly discovered symbols ratio: 0.111111111111
+log-likelihood: -23.0083469777
+correctly discovered symbols ratio: 0.0
+log-likelihood: -22.7685265434
+correctly discovered symbols ratio: 0.111111111111
+log-likelihood: -23.156230556
+correctly discovered symbols ratio: 0.333333333333
+log-likelihood: -22.9598508256
+correctly discovered symbols ratio: 0.333333333333
+log-likelihood: -22.4375481377
+correctly discovered symbols ratio: 0.222222222222
+log-likelihood: -22.8463191839
+correctly discovered symbols ratio: 0.222222222222
+log-likelihood: -23.0818269512
+correctly discovered symbols ratio: 0.0
+log-likelihood: -22.7848261675
+correctly discovered symbols ratio: 0.222222222222
+Best LL: -22.4375481377, best ratio: 0.222222222222
+average ratio of correctly discovered symbols: 0.188888888889
+[1.01, 1.1, 1.5, 2, 5, 10]
+[0.2222222222222222, 0.2222222222222222, 0.2222222222222222, 0.3333333333333333, 0.2222222222222222]
+[0.21111111111111117, 0.14444444444444446, 0.2111111111111111, 0.19999999999999998, 0.18888888888888888]
+[0.0, 0.0, 0.0, 0.0, 0.0]
+[0.44444444444444442, 0.22222222222222221, 0.33333333333333331, 0.33333333333333331, 0.33333333333333331]
+log-likelihood: -23.301185918
+correctly discovered symbols ratio: 0.222222222222
+log-likelihood: -23.0083469777
+correctly discovered symbols ratio: 0.0
+log-likelihood: -23.2574571753
+correctly discovered symbols ratio: 0.0
+log-likelihood: -23.0274133417
+correctly discovered symbols ratio: 0.333333333333
+log-likelihood: -23.1384709298
+correctly discovered symbols ratio: 0.222222222222
+log-likelihood: -22.6860527693
+correctly discovered symbols ratio: 0.222222222222
+log-likelihood: -22.6398708055
+correctly discovered symbols ratio: 0.222222222222
+log-likelihood: -22.7848261675
+correctly discovered symbols ratio: 0.333333333333
+log-likelihood: -23.1010244241
+correctly discovered symbols ratio: 0.333333333333
+log-likelihood: -23.0818269512
+correctly discovered symbols ratio: 0.222222222222
+Best LL: -22.6398708055, best ratio: 0.222222222222
+average ratio of correctly discovered symbols: 0.211111111111
+[1.01, 1.1, 1.5, 2, 5, 10]
+[0.2222222222222222, 0.2222222222222222, 0.2222222222222222, 0.3333333333333333, 0.2222222222222222, 0.2222222222222222]
+[0.21111111111111117, 0.14444444444444446, 0.2111111111111111, 0.19999999999999998, 0.18888888888888888, 0.2111111111111111]
+[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+[0.44444444444444442, 0.22222222222222221, 0.33333333333333331, 0.33333333333333331, 0.33333333333333331, 0.33333333333333331]
